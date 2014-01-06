@@ -4,6 +4,8 @@ Created on 2013-12-31
 @author: lenovo
 '''
 from numpy import *
+import matplotlib
+import matplotlib.pyplot as plt
 import operator
 
 def createDataSet():
@@ -25,8 +27,15 @@ def classify0(inX, dataSet, labels, k):
     sortedClassCount = sorted(classCount.iteritems(), key=operator.itemgetter(1), reverse=True)
     return sortedClassCount[0][0]
     
-group, labels = createDataSet()
-print classify0([0, 0], group, labels, 3)
+def autoNorm(dataSet):
+    minVals = dataSet.min(0)
+    maxVals = dataSet.max(0)
+    ranges = maxVals - minVals
+    normDataSet = zeros(shape(dataSet))
+    m = dataSet.shape[0]
+    normDataSet = dataSet - tile(minVals, (m, 1))
+    normDataSet = normDataSet / tile(ranges, (m, 1))
+    return normDataSet, ranges, minVals
     
     
     
