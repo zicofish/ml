@@ -160,7 +160,6 @@ def localWords(feed1, feed0):
     return vocabList, p0V, p1V
 
 def getTopWords(ny, sf):
-    import operator
     vocabList, p0V, p1V = localWords(ny, sf)
     topNY = []; topSF = []
     for i in range(len(p0V)):
@@ -177,6 +176,4 @@ def getTopWords(ny, sf):
     for item in sortedNY:
         print item[0]
     
-ny = feedparser.parse('http://newyork.craigslist.org/stp/index.rss')
-sf = feedparser.parse('http://sfbay.craigslist.org/stp/index.rss')
-getTopWords(ny, sf)
+testingNB()
