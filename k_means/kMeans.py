@@ -84,15 +84,54 @@ def plotKMeans(datMat, centroids, clusterAssment):
         ax.scatter(cluster[:, 0].flatten().A[0], cluster[:, 1].flatten().A[0], c=clusterColors[i])
         ax.scatter([centroids[i, 0]], [centroids[i, 1]], marker='^', c= clusterColors[i], s=100)
     plt.show()
+    
+import urllib
+import json
+def geoGrab(stAddress, city):
+    """
+    The following code is not going to work since I don't have access to this geocoding service.
+    It needs payment...
+    """
+    apiStem = 'http://where.yahooapis.com/geocode?'
+    params = {}
+    params['flags'] = 'J'
+    params['appid'] = 'ppp68N6k'
+    params['location'] = '%s %s' % (stAddress, city)
+    url_params = urllib.urlencode(params)
+    yahooApi = apiStem + url_params
+    print yahooApi
+    c = urllib.urlopen(yahooApi)
+    content = c.read()
+    print content
+    return json.loads(content)
+
+from time import sleep
+def massPlaceFind(fileName):
+    fw = open('places.txt', 'w')
+    for line in open(fileName).readlines():
+        line = line.strip()
+        lineArr = line.split('\t')
+        retDict = geoGrab(lineArr[1], lineArr[2])
+        if retDict['ResultSet']['Error'] == 0:
+            lat = float(retDict['ResultSet']['Results'][0]['latitude'])
+            lng = float(retDict['ResultSet']['Results'][0]['longitude'])
+            print "%s\t%f\t%f\n" % (lineArr[0], lat, lng)
+            fw.write("%s\t%f\t%f\n" % (line, lat, lng))
+        else:
+            print "error fetching"
+        sleep(1)
+    fw.close()
+
+geoResults = geoGrab('1 VA Center', 'Augusta, ME')
 
 #sometimes could go into local minimum and the clusters are not so good, but it does not so frequently happen    
-datMat = mat(loadDataSet('testSet2.txt'))
-mycentroids, clustAssing = kMeans(datMat, 3)
-plotKMeans(datMat, mycentroids, clustAssing)
+#datMat = mat(loadDataSet('testSet2.txt'))
+#mycentroids, clustAssing = kMeans(datMat, 3)
+#plotKMeans(datMat, mycentroids, clustAssing)
 
 #seems to perform better than the above method
-datMat = mat(loadDataSet('testSet2.txt'))
-centList, myNewAssments = biKmeans(datMat, 3)
-plotKMeans(datMat, centList, myNewAssments)
+#datMat = mat(loadDataSet('testSet2.txt'))
+#centList, myNewAssments = biKmeans(datMat, 3)
+#plotKMeans(datMat, centList, myNewAssments)
 # a = mat([[23, 23,3], [23, 32, 4]])
 # print a[0, :].tolist()
